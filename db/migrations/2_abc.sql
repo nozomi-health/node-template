@@ -1,0 +1,4 @@
+ALTER TABLE "User"
+ADD COLUMN "createdAt" BIGINT,
+ADD COLUMN "updatedAt" BIGINT,
+ADD COLUMN "version" INT;
