@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  postgresql:
+    image: postgres:latest
+    container_name: testpostgresql
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "8001:5432"
+    volumes:
+      - ~/.pg-data/nodeTemplate:/var/lib/postgresql/data
+
+volumes:
+  database_postgres:
