@@ -4,8 +4,8 @@
   "description": "",
   "scripts": {
     "start:dev": "pm2 start ecosystem.config.js",
-    "db:start": "docker compose up",
-    "db:migrate": "node -r dotenv/config ./db/migrate.js dotenv_config_path=./db/.env",
+    "db:start": "docker-compose up",
+    "db:migrate": "node -r dotenv/config ./db/migrate.js dotenv_config_path=./db/.env.example",
     "lint": "eslint ."
   },
   "private": true,

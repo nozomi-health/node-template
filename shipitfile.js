@@ -13,11 +13,11 @@ module.exports = (shipit) => {
   require('shipit-deploy')(shipit);
   require('shipit-shared')(shipit);
 
-  const appName = 'node-test-server';
+  const appName = 'test-ws';
 
   shipit.initConfig({
     default: {
-      deployTo: `/opt/nozomihealth/test-service`,
+      deployTo: '/opt/nozomihealth/test-ws',
       repositoryUrl: config.githubRepoUrl,
       keepReleases: 3,
       shared: {
@@ -43,11 +43,10 @@ module.exports = (shipit) => {
 
   shipit.on('published', async () => {
     shipit.start('pm2-server');
-    shipit.start('nginx-config');
   });
 
   shipit.blTask('npm-install', async () => {
-    shipit.remote(`cd ${shipit.releasePath} && yarn install --production`);
+    shipit.remote(`cd ${shipit.releasePath} && yarn install`);
   });
 
   shipit.blTask('copy-config', async () => {
@@ -55,16 +54,16 @@ module.exports = (shipit) => {
   });
 
   shipit.blTask('pm2-server', async () => {
-    await shipit.remote(`cd ${shipit.releasePath} && npx pm2 delete -s ${appName} || :`);
+    await shipit.remote(`cd ${shipit.releasePath} && pm2 delete -s ${appName} || :`);
     await shipit.remote(
-      `cd ${shipit.releasePath} && npx pm2 start ${ecosystemFilePath} --env production --watch true`,
+      `cd ${shipit.releasePath} && pm2 start ${ecosystemFilePath}`,
     );
-  });
 
-  shipit.blTask('nginx-config', async () => {
+    await shipit.remote(`cd ${shipit.releasePath} && docker-compose down 2> /dev/null && docker-compose rm -f postgresql > /dev/null`);
+    await shipit.remote(`cd ${shipit.releasePath} && bash ./scripts/docker.sh testpostgresql`);
+    await shipit.remote(`cd ${shipit.releasePath} && yarn db:migrate`);
+
     await shipit.remote(`DOMAIN=${config.domain} node ${shipit.releasePath}/nginx/nginx.js > /etc/nginx/sites-available/${config.domain}`);
     await shipit.remote('systemctl restart nginx');
-
-    await shipit.remote(`docker-compose down && cd ${shipit.releasePath} && yarn db:start && yarn db:migrate`);
   });
 };
