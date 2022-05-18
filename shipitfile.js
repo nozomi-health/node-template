@@ -45,6 +45,7 @@ module.exports = (shipit) => {
   });
 
   shipit.blTask('copy-config', async () => {
+    await shipit.remote(`mkdir -p ${shipit.config.deployTo}/shared`);
     await shipit.copyToRemote('ecosystem.config.js', ecosystemFilePath);
   });
 
