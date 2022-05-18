@@ -36,14 +36,14 @@ class UserService {
   }
 
   async findUsersByNameLength(nameLength) {
-    const userTO = await this.repository.user.findAllByNameLength(nameLength);
-    if (!userTO) {
+    const usersTO = await this.repository.user.findAllByNameLength(nameLength);
+    if (!usersTO) {
       return null;
     }
 
-    const userVO = {...userTO};
+    const usersVO = usersTO.map((to) => ({...to}));
 
-    return userVO;
+    return usersVO;
   }
 
   async createUser(userVO) {

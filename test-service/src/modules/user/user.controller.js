@@ -1,7 +1,10 @@
+const {query} = require('express-validator');
+
 const BaseController = require('../../../../shared/classes/BaseController');
 const validationSchemas = require('../../validators/schemas');
 const validate = require('../../../../shared/middleware/validationMiddleware');
 const ApiError = require('../../../../shared/exceptions/ApiError');
+const paramIdValidator = require('../../../../shared/validators/paramId');
 
 class UserController extends BaseController {
   constructor(service) {
@@ -13,19 +16,38 @@ class UserController extends BaseController {
     this.update = this.update.bind(this);
     this.delete = this.delete.bind(this);
 
-    // добавить валидации кверей и параметры
-    // add nameLength query
-    this.router.get('/', this.getAll);
-    this.router.get('/:id', this.getById);
+    this.router.get(
+      '/',
+      validate([
+        query('nameLength').optional().isNumeric().withMessage('nameLength must be numeric'),
+        query('email').optional().isEmail().withMessage('Invalid email'),
+      ]),
+      this.getAll,
+    );
 
-    this.router.delete('/:id', this.delete);
+    this.router.get(
+      '/:id',
+      validate([paramIdValidator('id')]),
+      this.getById,
+    );
 
-    this.router.post('/', validate([
-      validationSchemas.user,
-    ]), this.create);
+    this.router.delete(
+      '/:id',
+      validate([paramIdValidator('id')]),
+      this.delete,
+    );
+
+    this.router.post(
+      '/',
+      validate([
+        validationSchemas.user,
+      ]),
+      this.create,
+    );
 
     this.router.put(
       '/:id',
+      validate([paramIdValidator('id')]),
       (req, __res, next) => {
         if (req.params.id !== req.body.id) {
           return next(ApiError.BadRequest());
@@ -40,8 +62,24 @@ class UserController extends BaseController {
     );
   }
 
-  async getAll(__req, res, next) {
+  async getAll(req, res, next) {
     try {
+      const emailFilter = req.query.email;
+      if (emailFilter) {
+        const emailFilteredUser = await this.service.user
+          .findUserByEmail(emailFilter);
+
+        return res.status(200).json(emailFilteredUser);
+      }
+
+      const nameLengthFilter = req.query.nameLength;
+      if (nameLengthFilter) {
+        const nameLengthFilteredUsers = await this.service.user
+          .findUsersByNameLength(nameLengthFilter);
+
+        return res.status(200).json(nameLengthFilteredUsers);
+      }
+
       const users = await this.service.user.findAllUsers();
       return res.status(200).json(users);
     } catch (err) {
