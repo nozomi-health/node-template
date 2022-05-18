@@ -11,7 +11,6 @@ const config = {
 
 module.exports = (shipit) => {
   require('shipit-deploy')(shipit);
-  require('shipit-shared')(shipit);
 
   const appName = 'test-ws';
 
@@ -20,10 +19,6 @@ module.exports = (shipit) => {
       deployTo: '/opt/nozomihealth/test-ws',
       repositoryUrl: config.githubRepoUrl,
       keepReleases: 3,
-      shared: {
-        overwrite: true,
-        dirs: ['node_modules'],
-      },
     },
     production: {
       servers: `${config.deployerUsername}@${config.appPublicIpAddress}`,
