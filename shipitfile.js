@@ -12,7 +12,7 @@ const config = {
 module.exports = (shipit) => {
   require('shipit-deploy')(shipit);
 
-  const appName = 'test-ws';
+  const appNames = ['test-ms'];
 
   shipit.initConfig({
     default: {
@@ -50,7 +50,7 @@ module.exports = (shipit) => {
   });
 
   shipit.blTask('pm2-server', async () => {
-    await shipit.remote(`cd ${shipit.releasePath} && pm2 delete -s ${appName} || :`);
+    await shipit.remote(`cd ${shipit.releasePath} && pm2 delete -s ${appNames.join(' ')} || :`);
     await shipit.remote(
       `cd ${shipit.releasePath} && pm2 start ${ecosystemFilePath}`,
     );
