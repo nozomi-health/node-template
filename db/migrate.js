@@ -1,6 +1,7 @@
 const path = require('path');
 const {migrate} = require('postgres-migrations');
 
+require('./env');
 const {getEnvVariable} = require('../shared/utils/config');
 
 const config = {
