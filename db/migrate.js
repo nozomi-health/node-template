@@ -1,8 +1,14 @@
+/* eslint-disable global-require */
 const path = require('path');
 const {migrate} = require('postgres-migrations');
 
-require('./env');
 const {getEnvVariable} = require('../shared/utils/config');
+
+if (process.env.MODE !== 'production') {
+  require('dotenv').config({path: path.join(__dirname, '.env')});
+} else {
+  require('./env');
+}
 
 const config = {
   username: getEnvVariable('DB_USERNAME', {isRequired: true}),

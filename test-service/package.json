@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node ./src/main.js",
     "start:dev": "nodemon ./src/main.js",
+    "start:prod": "MODE=production node ./src/main.js",
     "lint": "eslint ."
   },
   "keywords": [],

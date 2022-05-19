@@ -4,8 +4,10 @@
   "description": "",
   "scripts": {
     "start:dev": "pm2 start ecosystem.config.js",
+    "start:prod": "pm2 start ecosystem.config.js --env production",
     "db:start": "docker-compose up",
-    "db:migrate": "node -r dotenv/config ./db/migrate.js dotenv_config_path=./db/.env.example",
+    "db:migrate": "node -r dotenv/config ./db/migrate.js",
+    "db:migrate:prod": "MODE=production node -r dotenv/config ./db/migrate.js",
     "lint": "eslint ."
   },
   "private": true,
