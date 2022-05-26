@@ -1,5 +1,5 @@
 {
-  "name": "test-service",
+  "name": "integration-test-service",
   "version": "1.0.0",
   "description": "",
   "scripts": {

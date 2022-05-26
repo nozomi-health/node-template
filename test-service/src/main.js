@@ -1,6 +1,7 @@
 const {Pool} = require('pg');
 const express = require('express');
 const cors = require('cors');
+
 const config = require('./config/config');
 const errorMiddleware = require('../../shared/middleware/errorMiddleware');
 

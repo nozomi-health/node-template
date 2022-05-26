@@ -12,7 +12,8 @@
   },
   "private": true,
   "workspaces": [
-    "test-service"
+    "test-service",
+    "integration-test-service"
   ],
   "repository": {
     "type": "git",

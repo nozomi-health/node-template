@@ -21,7 +21,13 @@ class UserController extends BaseController {
       validate([
         query('nameLength').optional().isNumeric().withMessage('nameLength must be numeric'),
         query('email').optional().isEmail().withMessage('Invalid email'),
+        query('populateStuff').optional().isBoolean().withMessage('populateStuff must be boolean'),
       ]),
+      (req, __res, next) => {
+        req.query.populateStuff = req.query.populateStuff === 'true';
+
+        return next();
+      },
       this.getAll,
     );
 
@@ -64,10 +70,11 @@ class UserController extends BaseController {
 
   async getAll(req, res, next) {
     try {
+      const {populateStuff} = req.query;
       const emailFilter = req.query.email;
       if (emailFilter) {
         const emailFilteredUser = await this.service.user
-          .findUserByEmail(emailFilter);
+          .findUserByEmail(emailFilter, populateStuff);
 
         return res.status(200).json(emailFilteredUser);
       }
@@ -75,12 +82,12 @@ class UserController extends BaseController {
       const nameLengthFilter = req.query.nameLength;
       if (nameLengthFilter) {
         const nameLengthFilteredUsers = await this.service.user
-          .findUsersByNameLength(nameLengthFilter);
+          .findUsersByNameLength(nameLengthFilter, populateStuff);
 
         return res.status(200).json(nameLengthFilteredUsers);
       }
 
-      const users = await this.service.user.findAllUsers();
+      const users = await this.service.user.findAllUsers(populateStuff);
       return res.status(200).json(users);
     } catch (err) {
       return next(err);

@@ -10,14 +10,8 @@ if (process.env.MODE !== 'production') {
 }
 
 const config = {
-  port: getEnvVariable('PORT', {defaultValue: 8081}),
-  db: {
-    connectionString: getEnvVariable('DB_CONNECTION_STRING', {isRequired: true}),
-  },
-  integration: {
-    integrationApiKey: getEnvVariable('INTEGRATION_API_KEY', {isRequired: true}),
-    integrationUrl: getEnvVariable('INTEGRATION_URL', {isRequired: true}),
-  },
+  port: getEnvVariable('PORT', {defaultValue: 8082}),
+  apiKey: getEnvVariable('API_KEY', {isRequired: true}),
 };
 
 module.exports = config;
