@@ -61,7 +61,7 @@ class UserService {
 
   async findUsersByNameLength(nameLength, populateStuff) {
     const usersTO = await this.repository.user.findAllByNameLength(nameLength);
-    
+
     if (!populateStuff) {
       const usersVO = usersTO.map((to) => ({...to}));
       return usersVO;
