@@ -3,11 +3,11 @@ const path = require('path');
 
 const {getEnvVariable} = require('../../../shared/utils/config');
 
-if (process.env.MODE !== 'production') {
-  require('dotenv').config({path: path.join(__dirname, '../../.env')});
-} else {
-  require('../../env');
-}
+require('dotenv').config({
+  path: path.join(__dirname, process.env.MODE !== 'production'
+    ? '../../.env'
+    : '../../env.prod'),
+});
 
 const config = {
   port: getEnvVariable('PORT', {defaultValue: 8082}),

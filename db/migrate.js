@@ -4,11 +4,11 @@ const {migrate} = require('postgres-migrations');
 
 const {getEnvVariable} = require('../shared/utils/config');
 
-if (process.env.MODE !== 'production') {
-  require('dotenv').config({path: path.join(__dirname, '.env')});
-} else {
-  require('./env');
-}
+require('dotenv').config({
+  path: path.join(__dirname, process.env.MODE !== 'production'
+    ? '.env'
+    : 'env.prod'),
+});
 
 const config = {
   username: getEnvVariable('DB_USERNAME', {isRequired: true}),
