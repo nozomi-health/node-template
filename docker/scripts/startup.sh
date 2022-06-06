@@ -1,5 +1,6 @@
 #/bin/bash
 CONTAINER_NAME=$1
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 if [ "$( docker container inspect -f '{{.State.Running}}' $CONTAINER_NAME )" == "true" ]
 then
@@ -7,7 +8,7 @@ then
   docker rm -f $CONTAINER_NAME 2> /dev/null
 fi
 
-docker-compose up -d
+docker-compose --env-file "$SCRIPT_DIR/../env.prod" up -d
 
 while true
 do

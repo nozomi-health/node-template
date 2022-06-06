@@ -52,11 +52,11 @@ module.exports = (shipit) => {
   shipit.blTask('pm2-server', async () => {
     await shipit.remote(`cd ${shipit.releasePath} && pm2 delete -s ${appNames.join(' ')} || :`);
     await shipit.remote(
-      `cd ${shipit.releasePath} && pm2 start ${ecosystemFilePath}`,
+      `cd ${shipit.releasePath} && pm2 start ${ecosystemFilePath} --env production`,
     );
 
-    await shipit.remote(`cd ${shipit.releasePath} && docker-compose down 2> /dev/null && docker-compose rm -f postgresql > /dev/null`);
-    await shipit.remote(`cd ${shipit.releasePath} && bash ./scripts/docker.sh testpostgresql`);
+    await shipit.remote(`cd ${shipit.releasePath}/docker && docker-compose down 2> /dev/null && docker-compose rm -f postgresql > /dev/null`);
+    await shipit.remote(`cd ${shipit.releasePath}/docker && bash ./scripts/startup.sh testpostgresql`);
     await shipit.remote(`cd ${shipit.releasePath} && yarn db:migrate`);
 
     await shipit.remote(`DOMAIN=${config.domain} node ${shipit.releasePath}/nginx/nginx.js > /etc/nginx/sites-available/${config.domain}`);
