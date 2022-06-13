@@ -35,11 +35,9 @@ To log outputs use ```npx pm2 logs```
   * Add a new object (corresponding to this service) in ecosystem.config file with both development and production env variables provided
 * Each new service must have .env and env.prod files for storing development and production environment variables
 
-## CI/CD configuration
+## Nginx configuration
 
-Manage nginx.conf (describe)
-
-Часть по сетапу сабдомена только в политике?
+You are able to add/edit nginx configurations for your services in ./nginx/nginx.conf file. **ONLY** 'Editable area' is allowed to be edited.
 
 ## Husky setup
 
