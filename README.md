@@ -24,6 +24,8 @@ yarn db:migrate:prod
 yarn start:prod
 ```
 
+To log outputs use ```npx pm2 logs```
+
 ## Rules
 
 * Add new migrations to ./db/migrations directory
