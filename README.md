@@ -39,6 +39,8 @@ To log outputs use ```npx pm2 logs```
 
 You are able to add/edit nginx configurations for your services in ./nginx/nginx.conf file. **ONLY** 'Editable area' is allowed to be edited.
 
+![](https://user-images.githubusercontent.com/36966618/173400736-61ac3a39-7f8c-4d3c-92ed-b74b5b1695dc.jpg)
+
 ## Husky setup
 
 After installing dependencies run 
