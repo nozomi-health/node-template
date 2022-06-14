@@ -1,7 +1,7 @@
 # node-template
 
 Use this project as a base for any node projects. Follow existing project structure, example files logic and principles while extending it.
-For more detailed info check https://www.notion.so/NodeJS-project-initialisation-240db20ef0e34208b1360b9a5b0c18e3
+For more detailed info check [Notion page](https://www.notion.so/NodeJS-project-initialisation-240db20ef0e34208b1360b9a5b0c18e3)
 
 ## Preconditions
 
