@@ -1,5 +1,4 @@
-const {getWhereString, getValuesFromObject} = require('../../db/scripts/dbScripts');
-const {getStringValue} = require('../utils/db');
+const {getStringValue, getWhereString, getValuesFromObject} = require('../utils/db');
 
 class EntityRepository {
   constructor(db) {

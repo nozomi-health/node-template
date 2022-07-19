@@ -56,7 +56,7 @@ module.exports = (shipit) => {
       `cd ${shipit.releasePath} && pm2 start ${ecosystemFilePath} --env production`,
     );
 
-    await shipit.remote(`cd ${shipit.releasePath}/docker && bash ./scripts/startup.sh testpostgresql`);
+    await shipit.remote(`cd ${shipit.releasePath}/db && bash ./scripts/startup.sh testpostgresql`);
     await shipit.remote(`cd ${shipit.releasePath} && yarn db:migrate:prod`);
 
     await shipit.remote(`DOMAIN=${config.domain} node ${shipit.releasePath}/nginx/nginx.js > /etc/nginx/sites-available/${config.domain}`);

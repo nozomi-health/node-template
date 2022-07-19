@@ -5,8 +5,8 @@
   "scripts": {
     "start:dev": "pm2 start ecosystem.config.js",
     "start:prod": "pm2 start ecosystem.config.js --env production",
-    "db:start": "docker-compose -p node-template -f docker/docker-compose.yml --env-file docker/.env up",
-    "db:start:prod": "docker-compose -p node-template -f docker/docker-compose.yml --env-file docker/env.prod up",
+    "db:start": "docker-compose -p node-template -f db/docker-compose.yml --env-file db/.env up",
+    "db:start:prod": "docker-compose -p node-template -f db/docker-compose.yml --env-file db/env.prod up",
     "db:migrate": "node ./db/migrate.js",
     "db:migrate:prod": "MODE=production node ./db/migrate.js",
     "lint": "eslint ."
