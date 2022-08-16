@@ -67,7 +67,7 @@ class EntityRepository {
     const sql = `DELETE FROM public."${tableName}"${where ? ` WHERE ${where}` : ''};`;
     const result = await this.db.query(sql);
 
-    return result;
+    return result.rowCount;
   }
 
   query(...args) {

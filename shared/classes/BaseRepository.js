@@ -58,10 +58,7 @@ class BaseRepository {
   }
 
   async deleteById(id) {
-    const queryResult = await this.entityRepository.delete(this.tableName, {id});
-    const resultTO = queryResult.rows;
-
-    return resultTO;
+    await this.entityRepository.delete(this.tableName, {id});
   }
 }
 
