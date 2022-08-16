@@ -22,19 +22,21 @@ const getStringValue = (value) => {
 };
 
 const removeNulls = (obj) => {
-  if (obj) {
-    Object.keys(obj).forEach((propName) => {
-      if (obj[propName] === null || obj[propName] === undefined) {
-        delete obj[propName]; // eslint-disable-line no-param-reassign
-      }
-    });
+  if (obj?.constructor?.name !== 'Object') {
+    return {};
   }
+
+  Object.keys(obj).forEach((propName) => {
+    if (obj[propName] === null || obj[propName] === undefined) {
+      delete obj[propName]; // eslint-disable-line no-param-reassign
+    }
+  });
 
   return obj;
 };
 
 const getWhereString = (tableName, obj) => {
-  if (!obj) {
+  if (obj?.constructor?.name !== 'Object') {
     return '';
   }
 
@@ -54,7 +56,7 @@ const getWhereString = (tableName, obj) => {
 };
 
 const getValuesFromObject = (obj) => {
-  if (!obj) {
+  if (obj?.constructor?.name !== 'Object') {
     return [];
   }
 
