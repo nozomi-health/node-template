@@ -48,6 +48,10 @@ const getWhereString = (tableName, obj) => {
     if (obj[key] === null) {
       return `"${tableName}"."${key}" IS NULL`;
     }
+    
+    if (Array.isArray(obj[key])) {
+      return `"${tableName}"."${key}" IN (${obj[key].map((value) => getStringValue(value)).join(',')})`;
+    }
 
     return `"${tableName}"."${key}" = ${getStringValue(obj[key])}`;
   }).join(' AND ');
