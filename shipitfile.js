@@ -17,7 +17,7 @@ module.exports = (shipit) => {
 
   shipit.initConfig({
     default: {
-      deployTo: '/opt/nozomihealth/test-ws',
+      deployTo: '/opt/nozomi/test-ws', // add your name
       repositoryUrl: config.githubRepoUrl,
       keepReleases: 3,
     },
@@ -56,7 +56,7 @@ module.exports = (shipit) => {
       `cd ${shipit.releasePath} && pm2 start ${ecosystemFilePath} --env production`,
     );
 
-    await shipit.remote(`cd ${shipit.releasePath}/db && bash ./scripts/startup.sh testpostgresql`);
+    await shipit.remote(`cd ${shipit.releasePath}/db && bash ./scripts/startup.sh testpostgresql`); // add your container name
     await shipit.remote(`cd ${shipit.releasePath} && yarn db:migrate:prod`);
 
     await shipit.remote(`DOMAIN=${config.domain} node ${shipit.releasePath}/nginx/nginx.js > /etc/nginx/sites-available/${config.domain}`);
