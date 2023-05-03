@@ -1,0 +1,14 @@
+{
+  "name": "@node-template/db",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "eslint": "^8.39.0"
+  },
+  "dependencies": {
+    "@node-template/shared": "^1.0.0",
+    "dotenv": "^16.0.3",
+    "pg": "^8.10.0",
+    "postgres-migrations": "^5.3.0"
+  }
+}

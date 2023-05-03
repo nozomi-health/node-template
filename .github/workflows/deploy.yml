@@ -1,62 +1,53 @@
-name: branch_push_deploy
+name: deploy_staging
 
 on:
   push:
     branches:
-      - master
+      - develop
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-      - run: npm i -g yarn
-      - run: yarn install
-      - run: yarn lint
-      # - run: yarn test
   deploy:
-    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-      - run: npm i -g yarn
-      - run: yarn install
+      - name: Install rsync
+        run: sudo apt-get update && sudo apt-get install -y rsync
       - uses: webfactory/ssh-agent@v0.5.4
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Adding Known Hosts
         run: ssh-keyscan -H ${{ secrets.PUBLIC_IP_ADDRESS }} >> ~/.ssh/known_hosts
       - name: Server deployment
+        run: rsync -avz ./ ${{ secrets.DEPLOYER_USERNAME }}@${{ secrets.PUBLIC_IP_ADDRESS }}:/opt/nozomi/node-template/node-template-ws/
+      - name: Service upload
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            cd /opt/nozomi/node-template/node-template-ws/
+            DB_NAME=${{ secrets.DB_NAME }} DB_USERNAME=${{ secrets.DB_USERNAME }} DB_PASSWORD=${{ secrets.DB_PASSWORD }} DB_HOST=${{ secrets.DB_HOST }} DB_CONTAINER_NAME=${{ secrets.DB_CONTAINER_NAME }} DB_PORT=${{ secrets.DB_PORT }} DB_VOLUME_PATH=${{ secrets.DB_VOLUME_PATH }} yarn docker-up:staging
+            cd /opt/nozomi/node-template/node-template-ws/nginx && DOMAIN=${{ secrets.DOMAIN }} node /opt/nozomi/node-template/node-template-ws/nginx/nginx.js > /etc/nginx/sites-available/${{ secrets.DOMAIN }}
+            echo ${{ secrets.DEPLOYER_PASSWORD }} | sudo -S systemctl restart nginx
+          host: ${{ secrets.PUBLIC_IP_ADDRESS }}
+          user: ${{ secrets.DEPLOYER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - id: set_var
+        run: |
+          content=`cat ./package.json`
+          # the following lines are only required for multi line json
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          # end of optional handling for multi line json
+          echo "::set-output name=packageJson::$content"
+      - name: Post to a Slack channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.19.0
+        with:
+          # Slack channel id, channel name, or user id to post message.
+          # See also: https://api.slack.com/methods/chat.postMessage#channels
+          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          # Message to post
+          slack-message: "Hi. A new v${{ fromJson(steps.set_var.outputs.packageJson).version }} version of our node.js app has been uploaded to staging env!"
         env:
-          DEPLOYER_USERNAME: ${{ secrets.DEPLOYER_USERNAME }}
-          PUBLIC_IP_ADDRESS: ${{ secrets.PUBLIC_IP_ADDRESS }}
-          GITHUB_REPO_URL: ${{ github.server_url }}/${{ github.repository }}
-          DOMAIN: ${{ secrets.DOMAIN }}
-        run: npx shipit production deploy
-      # - id: set_var
-      #   run: |
-      #     content=`cat ./package.json`
-      #     # the following lines are only required for multi line json
-      #     content="${content//'%'/'%25'}"
-      #     content="${content//$'\n'/'%0A'}"
-      #     content="${content//$'\r'/'%0D'}"
-      #     # end of optional handling for multi line json
-      #     echo "::set-output name=packageJson::$content"
-      # - name: Post to a Slack channel
-      #   id: slack
-      #   uses: slackapi/slack-github-action@v1.19.0
-      #   with:
-      #     # Slack channel id, channel name, or user id to post message.
-      #     # See also: https://api.slack.com/methods/chat.postMessage#channels
-      #     channel-id: 'Channel_Id'
-      #     # Message to post 
-      #     slack-message: "Hi. A new v${{ fromJson(steps.set_var.outputs.packageJson).version }} version of our web app has been uploaded!"
-      #   env:
-      #     # Slack developer bot token
-      #     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          # Slack developer bot token
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

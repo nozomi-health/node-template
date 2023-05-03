@@ -1,0 +1,83 @@
+version: '3.8'
+
+networks:
+  nozomi-template:
+    name: nozomi-template
+
+services:
+  postgresql:
+    image: postgres:14.7
+    container_name: ${DB_CONTAINER_NAME}
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - ${DB_VOLUME_PATH}:/var/lib/postgresql/data
+    networks:
+      - nozomi-template
+  test-service:
+    container_name: nozomi-template-test-service
+    image: nozomi-template-test:latest
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_CONTAINER_NAME=${DB_CONTAINER_NAME}
+      - DB_PORT=${DB_PORT}
+      - DB_VOLUME_PATH=${DB_VOLUME_PATH}
+    build:
+      context: .
+      dockerfile: ./apps/test-service-app/Dockerfile
+      target: build
+      args:
+        TARGET: ${TARGET}
+    depends_on:
+      - postgresql
+    networks:
+      - nozomi-template
+    # volumes:
+    #   - ./test-service-app/src:/app/test-service-app/src
+    #   - ./packages:/app/packages
+    restart: always
+    ports:
+      - "8081:8081"
+  integration-test-service:
+    container_name: nozomi-template-integration-test-service
+    image: nozomi-template-integration-test:latest
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_CONTAINER_NAME=${DB_CONTAINER_NAME}
+      - DB_PORT=${DB_PORT}
+      - DB_VOLUME_PATH=${DB_VOLUME_PATH}
+    build:
+      context: .
+      dockerfile: ./apps/integration-test-service-app/Dockerfile
+      target: build
+      args:
+        TARGET: ${TARGET}
+    depends_on:
+      - postgresql
+    networks:
+      - nozomi-template
+    # volumes:
+    #   - ./integration-test-service-app/src:/app/integration-test-service-app/src
+    #   - ./packages:/app/packages
+    restart: always
+    ports:
+      - "8082:8082"
+  # migration:
+  #   build:
+  #     context: .
+  #     dockerfile: ./db/Dockerfile
+  #   depends_on:
+  #     - postgresql
+  #   environment:
+  #   - DATABASE_URL=${DB_NAME}://${DB_USERNAME}:${DB_PASSWORD}@${DB_CONTAINER_NAME}:5432/dbname
