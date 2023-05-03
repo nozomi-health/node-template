@@ -5,36 +5,58 @@ For more detailed info check [Notion page](https://www.notion.so/NodeJS-project-
 
 ## Preconditions
 
-Docker desktop must be installed to run database inside the container
+Docker desktop must be installed to run database and microservices inside the containers
 
 ## Install and run
 
 * Development
-```
-yarn install
-yarn db:start
-yarn db:migrate
-yarn start:dev
-```
 
-* Production
-```
-yarn install
-yarn db:start:prod
-yarn db:migrate:prod
-yarn start:prod
-```
+  - PM2
 
-To log outputs use ```npx pm2 logs```
+    To install dependencies run
+    ```
+    yarn
+    ```
+
+    To start database and apply migrations run
+    ```
+    yarn db:start:dev
+    yarn db:migrate:dev
+    ```
+
+    To start services run
+    ```
+    yarn start:dev
+    ```
+    To log pm2 outputs use ```npx pm2 logs```
+
+  - Docker
+
+    To start db and services in docker run
+    ```
+    yarn docker-up:dev
+    yarn
+    yarn db:migrate:dev
+    ```
+
+* Remote environments
+
+  To start db and services in docker run
+  ```
+  yarn docker-up:staging
+  yarn docker-up:prod
+  ```
 
 ## Rules
 
-* Add new migrations to ./db/migrations directory
-* Add local environment variables to .env files in db, docker and any of your service directories
 * When creating a new service you must:
-  * Add it’s name to root’s package.json 'workspaces' section (so dependencies are shared among services)
-  * Add a new object (corresponding to this service) in ecosystem.config file with both development and production env variables provided
-* Each new service must have .env and env.prod files for storing development and production environment variables
+  * Add a new object (corresponding to this service) in ecosystem.config file
+  * Add service section in docker-compose.yml file
+* Each new service must have .env, .env.staging, .env.production files for storing development, staging and production environment variables
+* Add new migrations to ./packages/db/migrations directory
+* All database configuration is stored in ./packages/db environment files(for dev we retrieve all environment variables from .env file and for other environments most part of variables comes from secret manager)
+* If you run services with PM2 DB_HOST should be server ip address or localhost and DB_PORT is external postgres container port.
+* If you run services with Docker DB_HOST should be postgres container name and DB_PORT - internal postgres container port
 
 ## Nginx configuration
 
@@ -42,11 +64,5 @@ You are able to add/edit nginx configurations for your services in ./nginx/nginx
 
 ![](https://user-images.githubusercontent.com/36966618/173400736-61ac3a39-7f8c-4d3c-92ed-b74b5b1695dc.jpg)
 
-## Husky setup
-
-After installing dependencies run 
-```
-yarn husky install && echo 'PATH=$PATH:'$PATH >> .husky/_/husky.sh
-```
 ## CI/CD Slack integration
 To enable slack notifications on automatic deployments, please, follow the instructions in corresponding section of ./.github/workflows/deploy.yml file

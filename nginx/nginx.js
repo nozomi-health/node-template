@@ -6,5 +6,5 @@ const domain = process.env.DOMAIN;
 let data = fs.readFileSync(path.resolve(__dirname, './nginx.conf'), 'utf-8');
 data = data.replaceAll('{{DOMAIN}}', domain);
 
-// eslint-disable-next-line no-console
-console.log(data);
+// Do not remove. console.log is needed to push data into pipe later.
+console.log(data); // eslint-disable-line no-console

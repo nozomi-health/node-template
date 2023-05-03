@@ -1,26 +1,14 @@
 module.exports = {
   apps: [
     {
-      name: 'test-ms',
-      script: './test-service/src/main.js',
-      watch: './test-service',
-      env: {
-        MODE: 'development',
-      },
-      env_production: {
-        MODE: 'production',
-      },
+      name: 'test-service-app',
+      script: './apps/test-service-app/src/main.js',
+      watch: './apps/test-service-app',
     },
     {
-      name: 'integration-test-ms',
-      script: './integration-test-service/src/main.js',
-      watch: './integration-test-service',
-      env: {
-        MODE: 'development',
-      },
-      env_production: {
-        MODE: 'production',
-      },
+      name: 'integration-test-service-app',
+      script: './apps/integration-test-service-app/src/main.js',
+      watch: './apps/integration-test-service-app',
     },
   ],
 };

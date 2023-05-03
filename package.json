@@ -4,17 +4,20 @@
   "description": "",
   "scripts": {
     "start:dev": "pm2 start ecosystem.config.js",
-    "start:prod": "pm2 start ecosystem.config.js --env production",
-    "db:start": "docker-compose -p node-template -f db/docker-compose.yml --env-file db/.env up",
-    "db:start:prod": "docker-compose -p node-template -f db/docker-compose.yml --env-file db/env.prod up",
-    "db:migrate": "node ./db/migrate.js",
-    "db:migrate:prod": "MODE=production node ./db/migrate.js",
+    "db:start:dev": "TARGET=dev docker-compose -f docker-compose.yml --env-file ./packages/db/.env up postgresql",
+    "db:migrate:dev": "node ./packages/db/migrate.js",
+    "db:migrate:staging": "MODE=staging node ./packages/db/migrate.js",
+    "db:migrate:prod": "MODE=production node ./packages/db/migrate.js",
+    "docker-up:dev": "TARGET=dev docker-compose -f docker-compose.yml --env-file ./packages/db/.env up",
+    "docker-up:staging": "TARGET=staging docker-compose -f docker-compose.yml up -d",
+    "docker-up:prod": "TARGET=prod docker-compose -f docker-compose.yml up -d",
+    "prepare": "husky install && echo 'PATH=$PATH:'$PATH >> .husky/_/husky.sh",
     "lint": "eslint ."
   },
   "private": true,
   "workspaces": [
-    "test-service",
-    "integration-test-service"
+    "apps/*",
+    "packages/*"
   ],
   "repository": {
     "type": "git",
@@ -24,21 +27,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^8.2.0",
+    "eslint": "^8.39.0",
     "eslint-config-airbnb-base": "15.0.0",
-    "eslint-plugin-import": "^2.25.2",
-    "husky": "^8.0.1",
-    "pm2": "^5.2.0",
-    "shipit-cli": "^5.3.0",
-    "shipit-deploy": "^5.3.0",
-    "shipit-shared": "^4.4.2"
-  },
-  "dependencies": {
-    "dotenv": "^16.0.1",
-    "express": "^4.18.1",
-    "express-validator": "^6.14.0",
-    "pg": "^8.7.3",
-    "postgres-migrations": "^5.3.0",
-    "uuid": "^8.3.2"
+    "eslint-plugin-import": "^2.27.5",
+    "husky": "^8.0.3",
+    "pm2": "^5.3.0"
   }
 }
