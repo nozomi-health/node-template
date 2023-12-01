@@ -6,10 +6,31 @@ on:
       - develop
 
 jobs:
-  deploy:
+  release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.17.1"
+      - name: Install dependencies
+        run: npm install -g yarn && yarn --network-timeout 100000 --frozen-lockfile
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+  deploy:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: develop
       - name: Install rsync
         run: sudo apt-get update && sudo apt-get install -y rsync
       - uses: webfactory/ssh-agent@v0.5.4
