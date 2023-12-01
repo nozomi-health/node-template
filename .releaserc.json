@@ -1,0 +1,34 @@
+{
+  "branches":[
+    "develop"
+  ],
+  "repositoryUrl": "https://github.com/nozomi-health/node-template",
+  "plugins": [
+    [ 
+      "@semantic-release/commit-analyzer",
+      {
+        "releaseRules":[
+          {"type": "breaking", "release": "major"},
+          {"type": "feat", "release": "minor"},
+          {"type": "fix", "release": "patch"},
+          {"type": "refactor", "release": "patch"}
+        ]
+      }
+    ],
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/changelog",
+      {
+        "changelogFile": "docs/CHANGELOG.md"
+      }
+    ],
+    "@semantic-release/npm",
+    ["@semantic-release/git", {
+      "assets": [
+        "package.json",
+        "docs/CHANGELOG.md"
+      ],
+      "message": "chore(release): update build version ${nextRelease.version}"
+    }]
+  ]
+}

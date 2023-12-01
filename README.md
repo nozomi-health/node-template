@@ -69,6 +69,12 @@ You are able to add/edit nginx configurations for your services in ./nginx/nginx
 ## CI/CD Slack integration
 To enable slack notifications on automatic deployments, please, follow the instructions in corresponding section of ./.github/workflows/deploy.yml file
 
+### Create new release
+
+> Configuration is stored inside **.releaserc.json** file
+
+> Semantic release update is getting triggered when we are pushing to **develop** branch according to current CI configuration
+
 ## Deployment
 
 To make GitHub Action work all the following secrets must be configured in project settings: SSH_PRIVATE_KEY, DOMAIN, PUBLIC_IP_ADDRESS, DEPLOYER_USERNAME, DEPLOYER_PASSWORD, PUBLIC_IP_ADDRESS, DB_NAME, DB_USERNAME, DB_PASSWORD, DB_HOST, DB_CONTAINER_NAME, DB_PORT, DB_VOLUME_PATH.
